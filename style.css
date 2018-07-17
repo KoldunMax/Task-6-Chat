@@ -74,6 +74,9 @@ h3#header-chat-title {
     border: 2px solid black;
     font-size: 26px;
     box-sizing: border-box;
+    overflow-y: scroll;
+    max-height: 800px;
+    min-height: 200px;
 }
 
 #aside-wrapper-names .online, 
@@ -117,12 +120,14 @@ h3#header-chat-title {
     box-sizing: border-box;
     border: 2px solid black;
     border-left: none;
+    overflow-y: scroll;
+    max-height: 800px;
 }
 
 #main-wrapper-messages .message-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: .5fr 1fr;
+    grid-template-rows: .1fr;
     font-size: 18px;
     margin: 20px 10px;
     border: 2px solid black;

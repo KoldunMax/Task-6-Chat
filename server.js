@@ -21,21 +21,62 @@ io.on("connection", function(socket) {
 
     console.log("client connected");
 
+    function changeStatusOnline(user) {
+        if(user.status == "just appeared") {
+            user.status = "online";
+            io.emit("change status",  user);
+        }
+    }
+
+    function changeStatusOffline(user) {
+        if(user.status == "just left") {
+            user.status = "offline";
+            io.emit("change status",  user);
+        }
+    }
+
+    socket.on("chat user", function(newUser) {
+
+        if(newUser.name.length != 0 && newUser.nickname.length != 0) {
+            var coincidence = false;
+
+            for(let i = 0; i < users.length; i++) {
+                if(users[i].nickname == newUser.nickname) {
+                    setTimeout(changeStatusOnline, 60000, users[i]);
+                    users[i].dataInv = new Date();
+                    users[i].status = "just appeared";
+                    users[i].id = socket.id;
+                    io.emit("change status",  users[i]);
+                    io.emit("change position message", users);
+                    coincidence = true;
+                    socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
+                }
+            }
+    
+            if(!coincidence) {
+                setTimeout(changeStatusOnline, 60000, newUser);
+                newUser.dataInv = new Date();
+                newUser.status = "just appeared";
+                newUser.id = socket.id;
+                users.push(newUser);
+                io.emit("chat user", newUser);
+              //  io.emit("change position message", newUser);
+                socket.emit("chat history current user", {msg: messages, nick: newUser.nickname});
+            }
+
+        } else {
+            io.emit("incorrect fields", "Your data either incorrect or empty");
+        }
+    })
+
     socket.on("chat message", function(msg) {
         messages.push(msg);
         io.emit("chat message", msg);
     });
 
-    socket.on("chat user", function(newUser) {
-        newUser.dataInv = new Date();
-        newUser.status = "just appeared";
-        newUser.id = socket.id;
-        users.push(newUser);
-        io.emit("chat user", newUser);
-    })
-
     socket.emit("adding user",  users);
     socket.emit("chat history", messages);
+  //  socket.emit("chat history current user", {msg: messages, nick: "User name"});
 
     socket.on('disconnect', function(){
         for(let i = 0; i < users.length; i++) {
@@ -43,6 +84,7 @@ io.on("connection", function(socket) {
                 console.log(`${users[i].nickname} is disconnected`);
                 users[i].status = "just left"; 
                 io.emit("change status",  users[i]);
+                setTimeout(changeStatusOffline, 60000, users[i]);
             }
         }
     });

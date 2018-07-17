@@ -1,62 +1,177 @@
-var userHeader = document.getElementById("userHeader");
-var nameButton = document.getElementById("nameButton");
-var nameInput = document.getElementById("nameInput");
-var messages = document.getElementById("messages");
-var text = document.getElementById("text");
-var textSubmit = document.getElementById("textSubmit");
 // -======================================================--==----------========
 var inviteButton = document.getElementById("inviteButton");
 var inviteName = document.getElementById("inviteName");
 var inviteNick = document.getElementById("inviteNick");
 var ULasideUsers = document.getElementById("users-name-list");
-
-console.log(ULasideUsers);
+var headerChatTitle = document.getElementById("header-chat-title");
+var textMessageFooter = document.getElementById("text-message-footer");
+var buttonMessageFooter = document.getElementById("button-message-footer");
+var mainWrapperMessages = document.getElementById("main-wrapper-messages");
+var contentMessage = mainWrapperMessages.getElementsByClassName("message-content");
 
 var nameUser = "User name";
-userHeader.innerHTML = nameUser;
-
 var socket = io.connect();
 
-nameButton.addEventListener("click", function() {
-    nameUser = nameInput.value || "User name";
-    userHeader.innerHTML = nameUser;
-});
 
 inviteButton.addEventListener("click", function() {
-    var newUser = {
+    nameUser = {
         name: inviteName.value,
         nickname: inviteNick.value
     }
 
-    socket.emit("chat user", newUser);
+    headerChatTitle.innerText = "You successfully joined in chat " + nameUser.nickname;
+
+    socket.emit("chat user", nameUser);
 })
 
-textSubmit.addEventListener("click", function() {
+buttonMessageFooter.addEventListener("click", function() {
     var data = {
-        name: nameUser,
-        text: text.value
+        name: nameUser.name,
+        nickname: nameUser.nickname,
+        text: textMessageFooter.value,
+        time: new Date()
     }
 
-    text.value = "";
+    textMessageFooter.value = "";
+
+    console.log(data);
 
     socket.emit("chat message", data);
 });
 
 socket.on("chat history", function(msg) {
-    console.log(msg);
+
     for(var i in msg) {
         if(msg.hasOwnProperty(i)) {
-            var el = document.createElement("li");
-            el.innerText = `${msg[i].name}: ${msg[i].text}`;
-            messages.appendChild(el); 
+            var namePlace = document.createElement("p");
+            namePlace.className = "nick-name-message";
+            namePlace.innerText = `${msg[i].name}(@${msg[i].nickname})`;
+
+            var timePlace = document.createElement("p");
+            timePlace.className = "time-sent-message";
+
+            let date = new Date(msg[i].time);
+
+            var mm = date.getMonth(); 
+            var dd = date.getDate();
+            var hh = date.getHours();
+            var min = date.getMinutes();
+            var sec = date.getSeconds();
+
+            var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']; 
+
+            timePlace.innerText = `${[  (hh>9 ? '' : '0') + hh + 'h', 
+                                        (min>9 ? '' : '0') + min + 'm', 
+                                        (sec>9 ? '' : '0') + sec + 's',
+                                        (dd>9 ? '' : '0') + dd,
+                                        mS[+((mm>9 ? '' : '0') + mm)],
+                                        date.getFullYear()
+                                    ].join(',')}`;
+
+            var textPlace = document.createElement("p");
+            textPlace.className = "message-user-text";
+            textPlace.innerText = msg[i].text;
+
+            var wrapperMessage = document.createElement("div");
+            wrapperMessage.className = "message-content other-user";
+            wrapperMessage.appendChild(namePlace);
+            wrapperMessage.appendChild(timePlace);
+            wrapperMessage.appendChild(textPlace);
+            
+            mainWrapperMessages.appendChild(wrapperMessage);
+        }
+    }
+});
+
+socket.on("chat history current user", function(data) {
+    while(mainWrapperMessages.children[0].className) {
+        mainWrapperMessages.children[0].remove();
+        if(!mainWrapperMessages.children[0]) {
+            break;
+        }
+    } 
+    for(var i in data.msg) {
+        if(data.msg.hasOwnProperty(i)) {
+            var namePlace = document.createElement("p");
+            namePlace.className = "nick-name-message";
+            namePlace.innerText = `${data.msg[i].name}(@${data.msg[i].nickname})`;
+
+            var timePlace = document.createElement("p");
+            timePlace.className = "time-sent-message";
+
+            let date = new Date(data.msg[i].time);
+
+            var mm = date.getMonth(); 
+            var dd = date.getDate();
+            var hh = date.getHours();
+            var min = date.getMinutes();
+            var sec = date.getSeconds();
+
+            var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']; 
+
+            timePlace.innerText = `${[  (hh>9 ? '' : '0') + hh + 'h', 
+                                        (min>9 ? '' : '0') + min + 'm', 
+                                        (sec>9 ? '' : '0') + sec + 's',
+                                        (dd>9 ? '' : '0') + dd,
+                                        mS[+((mm>9 ? '' : '0') + mm)],
+                                        date.getFullYear()
+                                    ].join(',')}`;
+
+            var textPlace = document.createElement("p");
+            textPlace.className = "message-user-text";
+            textPlace.innerText = data.msg[i].text;
+
+            var wrapperMessage = document.createElement("div");
+            if(data.msg[i].nickname != data.nick) {
+                wrapperMessage.className = "message-content other-user";
+            } else {
+                wrapperMessage.className = "message-content current-user";
+            }
+            wrapperMessage.appendChild(namePlace);
+            wrapperMessage.appendChild(timePlace);
+            wrapperMessage.appendChild(textPlace);
+            mainWrapperMessages.appendChild(wrapperMessage);
         }
     }
 });
 
 socket.on("chat message", function(msg) {
-    var el = document.createElement("li");
-    el.innerText = `${msg.name}: ${msg.text}`;
-    messages.appendChild(el); 
+
+    var namePlace = document.createElement("p");
+    namePlace.className = "nick-name-message";
+    namePlace.innerText = `${msg.name}(@${msg.nickname})`;
+
+    var timePlace = document.createElement("p");
+    timePlace.className = "time-sent-message";
+
+    let date = new Date(msg.time);
+
+    var mm = date.getMonth(); 
+    var dd = date.getDate();
+    var hh = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+
+    var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']; 
+
+    timePlace.innerText = `${[  (hh>9 ? '' : '0') + hh + 'h', 
+                                (min>9 ? '' : '0') + min + 'm', 
+                                (sec>9 ? '' : '0') + sec + 's',
+                                (dd>9 ? '' : '0') + dd,
+                                mS[+((mm>9 ? '' : '0') + mm)],
+                                date.getFullYear()
+                             ].join(',')}`;
+
+    var textPlace = document.createElement("p");
+    textPlace.className = "message-user-text";
+    textPlace.innerText = msg.text;
+
+    var wrapperMessage = document.createElement("div");
+    wrapperMessage.className = "message-content current-user";
+    wrapperMessage.appendChild(namePlace);
+    wrapperMessage.appendChild(timePlace);
+    wrapperMessage.appendChild(textPlace);
+    mainWrapperMessages.appendChild(wrapperMessage);
 });
 
 socket.on("adding user", function(users) {
@@ -100,6 +215,8 @@ socket.on("adding user", function(users) {
     }
 });
 
+
+
 socket.on("change status", function(user) {
     for(let obj of ULasideUsers.getElementsByTagName("li")) {
         if(obj.children[1].innerText == user.nickname) {
@@ -111,7 +228,19 @@ socket.on("change status", function(user) {
             }
         }
     }
-})
+});
+
+
+
+socket.on("change position message", function(users) {
+    for(let i = 0; i < mainWrapperMessages.children.length; i++) {
+        for(let j = 0; j < users.length; j++) {
+            if(mainWrapperMessages.children[i].className && `${user.name}(@${user.nickname})` == mainWrapperMessages.children[i].firstElementChild.innerText){
+            mainWrapperMessages.children[i].className = "message-content current-user";
+         }
+        }     
+    }
+});
 
 /* 
 for(let obj of ULasideUsers.getElementsByTagName("li")) {
@@ -137,3 +266,7 @@ socket.on("chat user", function(user) {
     console.log(el);
     ULasideUsers.appendChild(el); 
 });
+
+socket.on("incorrect fields", function(msg) {
+    alert(msg);
+})
