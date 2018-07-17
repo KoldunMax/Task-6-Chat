@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Chat</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chat</title>
+    <base href="/">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
     <script src="/socket.io/socket.io.js" defer></script>
     <script src="script.js" type="text/javascript" defer></script>
-
-</head>
+</head> 
 <body>
     <div id="userHeader"></div>
     <div>
@@ -20,5 +22,54 @@
         <textarea id="text" cols="30" rows="10"></textarea>
         <input type="button" value="Submit" id="textSubmit">
     </div>
+
+    <div id="inviteform">
+        <input type="text" max-length="10" class="inviteInput" id="inviteName" placeholder="Name">
+        <input type="text" class="inviteInput" id="inviteNick" placeholder="NickName">
+        <input type="button" value="OK" id="inviteButton">
+    </div>
+
+    <div id="main-wrapper-chat">
+
+        <h3 id="header-chat-title">You successfully joined in chat</h3>
+        
+        <div id="aside-wrapper-names">
+            <ul>
+                <li><span class="online"></span> Mike22 <span class="state-time-coming">online</span></li>
+                <li><span class="offline"></span> MickySuper <span class="state-time-coming">offline</span></li>
+                <li><span class="online"></span> BenGun <span class="state-time-coming">just appeared</span></li>
+                <li><span class="offline"></span> BenGun11 <span class="state-time-coming">just left</span></li>
+            </ul>
+        </div>
+
+        <div id="main-wrapper-messages">
+            <div class="message-content other-user">
+                <p class="nick-name-message">Mike22</p>
+                <p class="time-sent-message">4.48 AM, 17 Jul</p>
+                <p class="message-user-text">Hi, for everybodyddddddddddddddddddddddddddddddddddddddddddddddd</p>
+            </div> 
+            
+            <div class="message-content current-user">
+                    <p class="nick-name-message">Mike22</p>
+                    <p class="time-sent-message">4.48 AM, 17 Jul</p>
+                    <p class="message-user-text">Hi, for everybodyddddddddddddddddddddddddddddddddddddddddddddddd</p>
+            </div>  
+            
+            <div class="message-content other-user">
+                    <p class="nick-name-message">Mike22</p>
+                    <p class="time-sent-message">4.48 AM, 17 Jul</p>
+                    <p class="message-user-text">Hi, for everybodyddddddddddddddddddddddddddddddddddddddddddddddd</p>
+            </div>
+
+            <p class="user-writing"><span class="name-user-typing">@user</span> is typing...</p>
+        </div>
+
+        <div id="footer-send-message">
+            <input type="text" id="text-message-footer" placeholder="your message">
+            <input type="button" value="Send" id="button-message-footer">
+        </div>
+
+    </div>
+
 </body>
 </html>
