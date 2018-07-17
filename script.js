@@ -8,6 +8,7 @@ var textMessageFooter = document.getElementById("text-message-footer");
 var buttonMessageFooter = document.getElementById("button-message-footer");
 var mainWrapperMessages = document.getElementById("main-wrapper-messages");
 var contentMessage = mainWrapperMessages.getElementsByClassName("message-content");
+var headerNameUser = document.getElementById("headerName");
 
 var nameUser = "User name";
 var socket = io.connect();
@@ -19,7 +20,7 @@ inviteButton.addEventListener("click", function() {
         nickname: inviteNick.value
     }
 
-    headerChatTitle.innerText = "You successfully joined in chat " + nameUser.nickname;
+    headerChatTitle.innerHTML = `You successfully joined in chat  <span id="headerName">${nameUser.nickname}</span`;
 
     socket.emit("chat user", nameUser);
 })
@@ -167,7 +168,7 @@ socket.on("chat message", function(msg) {
     textPlace.innerText = msg.text;
 
     var wrapperMessage = document.createElement("div");
-    wrapperMessage.className = "message-content current-user";
+    wrapperMessage.className = "message-content other-user";
     wrapperMessage.appendChild(namePlace);
     wrapperMessage.appendChild(timePlace);
     wrapperMessage.appendChild(textPlace);

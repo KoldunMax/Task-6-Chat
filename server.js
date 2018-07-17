@@ -72,6 +72,9 @@ io.on("connection", function(socket) {
     socket.on("chat message", function(msg) {
         messages.push(msg);
         io.emit("chat message", msg);
+        socket.emit("chat history current user", {msg: messages, nick: msg.nickname});
+            //socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
+        
     });
 
     socket.emit("adding user",  users);
