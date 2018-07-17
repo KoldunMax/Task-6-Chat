@@ -1,3 +1,4 @@
+
 // -======================================================--==----------========
 var inviteButton = document.getElementById("inviteButton");
 var inviteName = document.getElementById("inviteName");
@@ -9,10 +10,10 @@ var buttonMessageFooter = document.getElementById("button-message-footer");
 var mainWrapperMessages = document.getElementById("main-wrapper-messages");
 var contentMessage = mainWrapperMessages.getElementsByClassName("message-content");
 var headerNameUser = document.getElementById("headerName");
+var feedback = document.getElementById("feedback");
 
 var nameUser = "User name";
 var socket = io.connect();
-
 
 inviteButton.addEventListener("click", function() {
     nameUser = {
@@ -21,9 +22,8 @@ inviteButton.addEventListener("click", function() {
     }
 
     headerChatTitle.innerHTML = `You successfully joined in chat  <span id="headerName">${nameUser.nickname}</span`;
-
     socket.emit("chat user", nameUser);
-})
+});
 
 buttonMessageFooter.addEventListener("click", function() {
     var data = {
@@ -32,35 +32,34 @@ buttonMessageFooter.addEventListener("click", function() {
         text: textMessageFooter.value,
         time: new Date()
     }
-
     textMessageFooter.value = "";
-
-    console.log(data);
-
+    feedback.innerHTML = "";
     socket.emit("chat message", data);
 });
 
-socket.on("chat history", function(msg) {
+textMessageFooter.addEventListener("keyup", function() {
+    socket.emit("typing", {nick: nameUser.nickname, lengthMes: textMessageFooter.value.length});
+});
 
+socket.on("typing", function(data) {
+    feedback.innerHTML = data;
+});
+
+socket.on("chat history", function(msg) {
     for(var i in msg) {
         if(msg.hasOwnProperty(i)) {
             var namePlace = document.createElement("p");
             namePlace.className = "nick-name-message";
             namePlace.innerText = `${msg[i].name}(@${msg[i].nickname})`;
-
             var timePlace = document.createElement("p");
             timePlace.className = "time-sent-message";
-
             let date = new Date(msg[i].time);
-
             var mm = date.getMonth(); 
             var dd = date.getDate();
             var hh = date.getHours();
             var min = date.getMinutes();
             var sec = date.getSeconds();
-
             var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']; 
-
             timePlace.innerText = `${[  (hh>9 ? '' : '0') + hh + 'h', 
                                         (min>9 ? '' : '0') + min + 'm', 
                                         (sec>9 ? '' : '0') + sec + 's',
@@ -137,7 +136,7 @@ socket.on("chat history current user", function(data) {
 });
 
 socket.on("chat message", function(msg) {
-
+    feedback.innerHTML = "";
     var namePlace = document.createElement("p");
     namePlace.className = "nick-name-message";
     namePlace.innerText = `${msg.name}(@${msg.nickname})`;
@@ -231,8 +230,6 @@ socket.on("change status", function(user) {
     }
 });
 
-
-
 socket.on("change position message", function(users) {
     for(let i = 0; i < mainWrapperMessages.children.length; i++) {
         for(let j = 0; j < users.length; j++) {
@@ -242,13 +239,6 @@ socket.on("change position message", function(users) {
         }     
     }
 });
-
-/* 
-for(let obj of ULasideUsers.getElementsByTagName("li")) {
-	obj.children[0].className = "offline";
-	obj.children[1].innerText = "just left"
-}
-*/
 
 socket.on("chat user", function(user) {
     var el = document.createElement("li");

@@ -35,6 +35,17 @@ io.on("connection", function(socket) {
         }
     }
 
+    socket.on("typing", function(data) {
+        if(data.lengthMes != 0) {
+            socket.broadcast.emit("typing", `<p><em>${data.nick} is typing a message...</em></p>`);
+        } else {
+            socket.broadcast.emit("typing", "");
+        }
+        
+    });
+
+    
+
     socket.on("chat user", function(newUser) {
 
         if(newUser.name.length != 0 && newUser.nickname.length != 0) {
@@ -73,8 +84,7 @@ io.on("connection", function(socket) {
         messages.push(msg);
         io.emit("chat message", msg);
         socket.emit("chat history current user", {msg: messages, nick: msg.nickname});
-            //socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
-        
+        //socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
     });
 
     socket.emit("adding user",  users);

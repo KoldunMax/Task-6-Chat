@@ -72,6 +72,7 @@ h3#header-chat-title {
 #aside-wrapper-names {
     width: 100%;
     border: 2px solid black;
+    border-bottom: none;
     font-size: 26px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -120,6 +121,7 @@ h3#header-chat-title {
     box-sizing: border-box;
     border: 2px solid black;
     border-left: none;
+    border-bottom: none;
     overflow-y: scroll;
     max-height: 800px;
 }
@@ -138,6 +140,11 @@ h3#header-chat-title {
 
 #main-wrapper-messages .other-user {
     justify-content: center;
+}
+
+#feedback {
+    grid-column: 1/-1;
+    justify-self: center;
 }
 
 #main-wrapper-messages .current-user {
