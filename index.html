@@ -24,8 +24,8 @@
     </div>
 
     <div id="inviteform">
-        <input type="text" max-length="10" class="inviteInput" id="inviteName" placeholder="Name">
-        <input type="text" class="inviteInput" id="inviteNick" placeholder="NickName">
+        <input type="text" max-length="10" class="inviteInput" id="inviteName" placeholder="Name" required>
+        <input type="text" class="inviteInput" id="inviteNick" placeholder="NickName" required>
         <input type="button" value="OK" id="inviteButton">
     </div>
 
@@ -34,9 +34,9 @@
         <h3 id="header-chat-title">You successfully joined in chat</h3>
         
         <div id="aside-wrapper-names">
-            <ul>
+            <ul id="users-name-list">
                 <li><span class="online"></span> Mike22 <span class="state-time-coming">online</span></li>
-                <li><span class="offline"></span> MickySuper <span class="state-time-coming">offline</span></li>
+                <li><span class="offline"></span> <span>MickySuper</span> <span class="state-time-coming">offline</span></li>
                 <li><span class="online"></span> BenGun <span class="state-time-coming">just appeared</span></li>
                 <li><span class="offline"></span> BenGun11 <span class="state-time-coming">just left</span></li>
             </ul>
