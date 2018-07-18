@@ -86,13 +86,8 @@ socket.on("chat history", function(msg) {
     }
 });
 
-socket.on("chat history current user", function(data) {
-    while(mainWrapperMessages.children[0].className) {
-        mainWrapperMessages.children[0].remove();
-        if(!mainWrapperMessages.children[0]) {
-            break;
-        }
-    } 
+socket.on("chat history current user", function(data) { 
+    mainWrapperMessages.innerHTML = "";
     for(var i in data.msg) {
         if(data.msg.hasOwnProperty(i)) {
             var namePlace = document.createElement("p");
