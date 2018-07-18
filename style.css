@@ -47,7 +47,7 @@
 /* Main part of chat */
 
 #main-wrapper-chat {
-    display: grid;
+    display: none;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: auto;
     max-width: 1200px;

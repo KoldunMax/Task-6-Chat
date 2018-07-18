@@ -3,11 +3,13 @@
 var inviteButton = document.getElementById("inviteButton");
 var inviteName = document.getElementById("inviteName");
 var inviteNick = document.getElementById("inviteNick");
+var inviteForm = document.getElementById("inviteform");
 var ULasideUsers = document.getElementById("users-name-list");
 var headerChatTitle = document.getElementById("header-chat-title");
 var textMessageFooter = document.getElementById("text-message-footer");
 var buttonMessageFooter = document.getElementById("button-message-footer");
 var mainWrapperMessages = document.getElementById("main-wrapper-messages");
+var mainWrapperChat = document.getElementById("main-wrapper-chat");
 var contentMessage = mainWrapperMessages.getElementsByClassName("message-content");
 var headerNameUser;
 var feedback = document.getElementById("feedback");
@@ -247,16 +249,6 @@ socket.on("change status", function(user) {
     }
 });
 
-/*socket.on("change position message", function(users) {
-    for(let i = 0; i < mainWrapperMessages.children.length; i++) {
-        for(let j = 0; j < users.length; j++) {
-            if(mainWrapperMessages.children[i].className && `${user.name}(@${user.nickname})` == mainWrapperMessages.children[i].firstElementChild.innerText){
-            mainWrapperMessages.children[i].className = "message-content current-user";
-         }
-        }     
-    }
-});*/
-
 socket.on("chat user", function(user) {
     var el = document.createElement("li");
     var onlineC = document.createElement("span");
@@ -273,6 +265,11 @@ socket.on("chat user", function(user) {
     el.insertBefore(onlineC, nameOfUser);
     ULasideUsers.appendChild(el); 
 });
+
+socket.on("chat user invite", function() {
+    inviteForm.style.display = "none";
+    mainWrapperChat.style.display = "grid";
+})
 
 socket.on("incorrect fields", function(msg) {
     alert(msg);
