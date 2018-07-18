@@ -9,7 +9,7 @@ var textMessageFooter = document.getElementById("text-message-footer");
 var buttonMessageFooter = document.getElementById("button-message-footer");
 var mainWrapperMessages = document.getElementById("main-wrapper-messages");
 var contentMessage = mainWrapperMessages.getElementsByClassName("message-content");
-var headerNameUser = document.getElementById("headerName");
+var headerNameUser;
 var feedback = document.getElementById("feedback");
 
 var nameUser = "User name";
@@ -22,6 +22,7 @@ inviteButton.addEventListener("click", function() {
     }
 
     headerChatTitle.innerHTML = `You successfully joined in chat  <span id="headerName">${nameUser.nickname}</span`;
+    headerNameUser = document.getElementById("headerName");
     socket.emit("chat user", nameUser);
 });
 
@@ -118,10 +119,19 @@ socket.on("chat history current user", function(data) {
                                     ].join(',')}`;
 
             var textPlace = document.createElement("p");
-            textPlace.className = "message-user-text";
+                        
+            var str = data.msg[i].text;
+
+            if(str.search(`@${data.nick}`) != -1) {
+               textPlace.className = "message-user-text message-user-text-regex";
+            } else {
+                textPlace.className = "message-user-text";
+            }
+
             textPlace.innerText = data.msg[i].text;
 
             var wrapperMessage = document.createElement("div");
+
             if(data.msg[i].nickname != data.nick) {
                 wrapperMessage.className = "message-content other-user";
             } else {
@@ -163,7 +173,13 @@ socket.on("chat message", function(msg) {
                              ].join(',')}`;
 
     var textPlace = document.createElement("p");
-    textPlace.className = "message-user-text";
+    var str =  msg.text;
+
+    if(str.search(`@${headerNameUser.innerText}`) != -1) {
+        textPlace.className = "message-user-text message-user-text-regex";
+    } else {
+         textPlace.className = "message-user-text";
+    }
     textPlace.innerText = msg.text;
 
     var wrapperMessage = document.createElement("div");
@@ -172,6 +188,7 @@ socket.on("chat message", function(msg) {
     wrapperMessage.appendChild(timePlace);
     wrapperMessage.appendChild(textPlace);
     mainWrapperMessages.appendChild(wrapperMessage);
+
 });
 
 socket.on("adding user", function(users) {
@@ -230,7 +247,7 @@ socket.on("change status", function(user) {
     }
 });
 
-socket.on("change position message", function(users) {
+/*socket.on("change position message", function(users) {
     for(let i = 0; i < mainWrapperMessages.children.length; i++) {
         for(let j = 0; j < users.length; j++) {
             if(mainWrapperMessages.children[i].className && `${user.name}(@${user.nickname})` == mainWrapperMessages.children[i].firstElementChild.innerText){
@@ -238,7 +255,7 @@ socket.on("change position message", function(users) {
          }
         }     
     }
-});
+});*/
 
 socket.on("chat user", function(user) {
     var el = document.createElement("li");
@@ -254,7 +271,6 @@ socket.on("chat user", function(user) {
     el.appendChild(onlinelabel);
     el.insertBefore(nameOfUser, onlinelabel);
     el.insertBefore(onlineC, nameOfUser);
-    console.log(el);
     ULasideUsers.appendChild(el); 
 });
 

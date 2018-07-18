@@ -41,7 +41,6 @@ io.on("connection", function(socket) {
         } else {
             socket.broadcast.emit("typing", "");
         }
-        
     });
 
     
@@ -74,13 +73,15 @@ io.on("connection", function(socket) {
               //  io.emit("change position message", newUser);
                 socket.emit("chat history current user", {msg: messages, nick: newUser.nickname});
             }
-
         } else {
-            io.emit("incorrect fields", "Your data either incorrect or empty");
+            socket.emit("incorrect fields", "Your data either incorrect or empty");
         }
     })
 
     socket.on("chat message", function(msg) {
+        if(messages.length == 100) {
+            messages.length = 0;
+        }
         messages.push(msg);
         io.emit("chat message", msg);
         socket.emit("chat history current user", {msg: messages, nick: msg.nickname});

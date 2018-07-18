@@ -165,6 +165,10 @@ h3#header-chat-title {
     word-wrap: break-word;
 }
 
+#main-wrapper-messages .message-user-text-regex {
+    background-color: var(--AccentColorLighten);
+}
+
 #main-wrapper-messages .user-writing {
     opacity: .5;
     padding-left: 10px;
