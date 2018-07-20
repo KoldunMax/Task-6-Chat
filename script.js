@@ -59,44 +59,6 @@ socket.on("typing", function(data) {
     feedback.innerHTML = data;
 });
 
-socket.on("chat history", function(msg) {
-    for(var i in msg) {
-        if(msg.hasOwnProperty(i)) {
-            var namePlace = document.createElement("p");
-            namePlace.className = "nick-name-message";
-            namePlace.innerText = `${msg[i].name}(@${msg[i].nickname})`;
-            var timePlace = document.createElement("p");
-            timePlace.className = "time-sent-message";
-            let date = new Date(msg[i].time);
-            var mm = date.getMonth(); 
-            var dd = date.getDate();
-            var hh = date.getHours();
-            var min = date.getMinutes();
-            var sec = date.getSeconds();
-            var mS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']; 
-            timePlace.innerText = `${[  (hh>9 ? '' : '0') + hh + 'h', 
-                                        (min>9 ? '' : '0') + min + 'm', 
-                                        (sec>9 ? '' : '0') + sec + 's',
-                                        (dd>9 ? '' : '0') + dd,
-                                        mS[+((mm>9 ? '' : '0') + mm)],
-                                        date.getFullYear()
-                                    ].join(',')}`;
-
-            var textPlace = document.createElement("p");
-            textPlace.className = "message-user-text";
-            textPlace.innerText = msg[i].text;
-
-            var wrapperMessage = document.createElement("div");
-            wrapperMessage.className = "message-content other-user";
-            wrapperMessage.appendChild(namePlace);
-            wrapperMessage.appendChild(timePlace);
-            wrapperMessage.appendChild(textPlace);
-            
-            mainWrapperMessages.appendChild(wrapperMessage);
-        }
-    }
-});
-
 socket.on("chat history current user", function(data) { 
     mainWrapperMessages.innerHTML = "";
     for(var i in data.msg) {
@@ -200,7 +162,7 @@ socket.on("chat message", function(msg) {
 });
 
 socket.on("adding user", function(users) {
-
+    ULasideUsers.innerHTML = "";
     for(var i in users) {
         if (users.hasOwnProperty(i)) {
 
@@ -209,6 +171,10 @@ socket.on("adding user", function(users) {
             var onlinelabel = document.createElement("span");
             var nameOfUser = document.createElement("span");
             onlinelabel.className = "state-time-coming";
+            if(users[i].nickname == nameUser.nickname) {
+                nameOfUser.style.color = "blue";
+                nameOfUser.style.fontWeight = "bold";
+            }
             nameOfUser.innerText = `${users[i].nickname}`;
 
             if(users[i].status == "online") {

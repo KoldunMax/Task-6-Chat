@@ -64,6 +64,7 @@ io.on("connection", function(socket) {
                             coincidence = true;
                             socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
                             socket.emit("chat user invite");
+                            socket.emit("adding user",  users);
                         } else {
                             socket.emit("incorrect fields", "This user is online currently");
                             coincidence = true;
@@ -85,6 +86,7 @@ io.on("connection", function(socket) {
               //  io.emit("change position message", newUser);
                 socket.emit("chat history current user", {msg: messages, nick: newUser.nickname});
                 socket.emit("chat user invite");
+                socket.emit("adding user",  users);
             }
         } else {
             socket.emit("incorrect fields", "Your data either incorrect or empty");
@@ -102,12 +104,7 @@ io.on("connection", function(socket) {
             io.emit("chat message", msg);
             socket.emit("chat history current user", {msg: messages, nick: msg.nickname});
         }
-        //socket.emit("chat history current user", {msg: messages, nick: users[i].nickname});
     });
-
-    socket.emit("adding user",  users);
-    socket.emit("chat history", messages);
-  //  socket.emit("chat history current user", {msg: messages, nick: "User name"});
 
     socket.on('disconnect', function(){
         for(let i = 0; i < users.length; i++) {
