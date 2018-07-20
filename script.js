@@ -14,7 +14,10 @@ var contentMessage = mainWrapperMessages.getElementsByClassName("message-content
 var headerNameUser;
 var feedback = document.getElementById("feedback");
 
-var nameUser = "User name";
+var nameUser = {
+    name: "User Name",
+    nickname: "User Nick"
+}
 var socket = io.connect();
 
 inviteButton.addEventListener("click", function() {
@@ -28,7 +31,7 @@ inviteButton.addEventListener("click", function() {
     socket.emit("chat user", nameUser);
 });
 
-buttonMessageFooter.addEventListener("click", function() {
+function sendDataUser() {
     var data = {
         name: nameUser.name,
         nickname: nameUser.nickname,
@@ -38,11 +41,19 @@ buttonMessageFooter.addEventListener("click", function() {
     textMessageFooter.value = "";
     feedback.innerHTML = "";
     socket.emit("chat message", data);
-});
+}
+
+buttonMessageFooter.addEventListener("click", sendDataUser);
 
 textMessageFooter.addEventListener("keyup", function() {
     socket.emit("typing", {nick: nameUser.nickname, lengthMes: textMessageFooter.value.length});
 });
+
+textMessageFooter.addEventListener("keypress", function(e) {
+    if(e.keyCode == 13) {
+        sendDataUser();
+    }
+})
 
 socket.on("typing", function(data) {
     feedback.innerHTML = data;
@@ -249,6 +260,10 @@ socket.on("chat user", function(user) {
     var onlineC = document.createElement("span");
     var onlinelabel = document.createElement("span");
     var nameOfUser = document.createElement("span");
+    if(user.nickname == nameUser.nickname) {
+        nameOfUser.style.color = "blue";
+        nameOfUser.style.fontWeight = "bold";
+    }
     nameOfUser.innerText = `${user.nickname}`;
     onlinelabel.className = "state-time-coming";
 
