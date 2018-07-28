@@ -49,6 +49,10 @@ textMessageFooter.addEventListener("keyup", function() {
     socket.emit("typing", {nick: nameUser.nickname, lengthMes: textMessageFooter.value.length});
 });
 
+textMessageFooter.addEventListener("blur", function(e) {
+    socket.emit("typing", {nick: nameUser.nickname, lengthMes: textMessageFooter.value.length, focus: false});
+});
+
 textMessageFooter.addEventListener("keypress", function(e) {
     if(e.keyCode == 13) {
         sendDataUser();

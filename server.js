@@ -36,13 +36,12 @@ io.on("connection", function(socket) {
     }
 
     socket.on("typing", function(data) {
-        if(data.lengthMes != 0) {
+        if(data.lengthMes != 0 && data.focus) {
             socket.broadcast.emit("typing", `<p><em>${data.nick} is typing a message...</em></p>`);
         } else {
             socket.broadcast.emit("typing", "");
         }
     });
-
     
 
     socket.on("chat user", function(newUser) {
@@ -83,7 +82,6 @@ io.on("connection", function(socket) {
                 newUser.id = socket.id;
                 users.push(newUser);
                 io.emit("chat user", newUser);
-              //  io.emit("change position message", newUser);
                 socket.emit("chat history current user", {msg: messages, nick: newUser.nickname});
                 socket.emit("chat user invite");
                 socket.emit("adding user",  users);
@@ -95,7 +93,7 @@ io.on("connection", function(socket) {
 
     socket.on("chat message", function(msg) {
         if(messages.length == 100) {
-            messages.length = 0;
+            messages.splice(0, 1);
         }
         if(msg.text.length == 0) {
             socket.emit("incorrect fields", "Your message is empty");
