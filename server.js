@@ -53,7 +53,6 @@ io.on("connection", function(socket) {
                 if(users[i].nickname == newUser.nickname) {
                     if(users[i].name == newUser.name) {
                         if(users[i].status != "online" && users[i].status != "just appeared") {
-                            console.log(users[i].status);
                             setTimeout(changeStatusOnline, 60000, users[i]);
                             users[i].dataInv = new Date();
                             users[i].status = "just appeared";
